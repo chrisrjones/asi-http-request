@@ -1206,6 +1206,11 @@ static NSOperationQueue *sharedQueue = nil;
     //
 
     if([[[[self url] scheme] lowercaseString] isEqualToString:@"https"]) {       
+        
+        NSDictionary *sslProperties = [[NSDictionary alloc] initWithObjectsAndKeys: @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3", (NSString *)kCFStreamSSLLevel, nil];
+        
+        CFReadStreamSetProperty((CFReadStreamRef) [self readStream], kCFStreamPropertySSLSettings, (CFTypeRef)sslProperties);
+        
        
         // Tell CFNetwork not to validate SSL certificates
         if (![self validatesSecureCertificate]) {
@@ -1215,7 +1220,7 @@ static NSOperationQueue *sharedQueue = nil;
                                       [NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredCertificates,
                                       [NSNumber numberWithBool:YES], kCFStreamSSLAllowsAnyRoot,
                                       [NSNumber numberWithBool:NO],  kCFStreamSSLValidatesCertificateChain,
-                                      kCFNull,kCFStreamSSLPeerName,
+                                      kCFNull,kCFStreamSSLPeerName, @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3", (NSString *)kCFStreamSSLLevel,
                                       nil];
             
             CFReadStreamSetProperty((CFReadStreamRef)[self readStream], 
@@ -1226,7 +1231,7 @@ static NSOperationQueue *sharedQueue = nil;
         
         // Tell CFNetwork to use a client certificate
         if (clientCertificateIdentity) {
-            NSMutableDictionary *sslProperties = [NSMutableDictionary dictionaryWithCapacity:1];
+            NSMutableDictionary *sslProperties = [NSMutableDictionary dictionaryWithCapacity:2];
             
 			NSMutableArray *certificates = [NSMutableArray arrayWithCapacity:[clientCertificates count]+1];
 
@@ -1239,10 +1244,11 @@ static NSOperationQueue *sharedQueue = nil;
 			}
             
             [sslProperties setObject:certificates forKey:(NSString *)kCFStreamSSLCertificates];
+            [sslProperties setObject:@"kCFStreamSocketSecurityLevelTLSv1_0SSLv3" forKey:(NSString *)kCFStreamSSLLevel];
             
             CFReadStreamSetProperty((CFReadStreamRef)[self readStream], kCFStreamPropertySSLSettings, sslProperties);
         }
-        
+        [sslProperties release];
     }
 
 	//

@@ -1207,10 +1207,12 @@ static NSOperationQueue *sharedQueue = nil;
 
     if([[[[self url] scheme] lowercaseString] isEqualToString:@"https"]) {       
         
-        NSDictionary *sslProperties = [[NSDictionary alloc] initWithObjectsAndKeys: @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3", (NSString *)kCFStreamSSLLevel, nil];
+        NSDictionary *sslProperties2 = [[NSDictionary alloc] initWithObjectsAndKeys: @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3", (NSString *)kCFStreamSSLLevel, nil];
         
-        CFReadStreamSetProperty((CFReadStreamRef) [self readStream], kCFStreamPropertySSLSettings, (CFTypeRef)sslProperties);
+        CFReadStreamSetProperty((CFReadStreamRef) [self readStream], kCFStreamPropertySSLSettings, (CFTypeRef)sslProperties2);
         
+        [sslProperties2 release];
+        sslProperties2 = nil;
        
         // Tell CFNetwork not to validate SSL certificates
         if (![self validatesSecureCertificate]) {
@@ -1248,7 +1250,7 @@ static NSOperationQueue *sharedQueue = nil;
             
             CFReadStreamSetProperty((CFReadStreamRef)[self readStream], kCFStreamPropertySSLSettings, sslProperties);
         }
-        [sslProperties release];
+        
     }
 
 	//

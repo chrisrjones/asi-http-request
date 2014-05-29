@@ -2214,7 +2214,6 @@ static NSOperationQueue *sharedQueue = nil;
 
 	// Read response textEncoding
 	[self parseStringEncodingFromHeaders];
-
 	// Handle cookies
 	NSArray *newCookies = [NSHTTPCookie cookiesWithResponseHeaderFields:[self responseHeaders] forURL:[self url]];
 	[self setResponseCookies:newCookies];
@@ -2222,7 +2221,8 @@ static NSOperationQueue *sharedQueue = nil;
 	if ([self useCookiePersistence]) {
 		
 		// Store cookies in global persistent store
-		[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:newCookies forURL:[self url] mainDocumentURL:nil];
+        //ron-watchout this was commented out at one point, but required for utrip.
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:newCookies forURL:[self url] mainDocumentURL:nil];
 		
 		// We also keep any cookies in the sessionCookies array, so that we have a reference to them if we need to remove them later
 		NSHTTPCookie *cookie;
@@ -2337,6 +2337,9 @@ static NSOperationQueue *sharedQueue = nil;
 		// Perhaps there are other headers we should be preserving, but it's hard to know what we need to keep and what to throw away.
 		NSString *userAgentHeader = [[self requestHeaders] objectForKey:@"User-Agent"];
 		NSString *acceptHeader = [[self requestHeaders] objectForKey:@"Accept"];
+        //ron- the call to removed all headers is a possible issue as we uncovered with u-trip, which used a custom auth-header for all pages
+        //to transfer request headers over to the 302 redirect url.
+        //[[self requestHeaders] removeObjectForKey:@"Content-Length"];
 		[self setRequestHeaders:nil];
 		if (userAgentHeader) {
 			[self addRequestHeader:@"User-Agent" value:userAgentHeader];

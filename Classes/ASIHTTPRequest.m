@@ -1230,7 +1230,7 @@ static NSOperationQueue *sharedQueue = nil;
                                       nil];
              */
             
-            
+            /*
             NSDictionary *sslProperties = [[NSDictionary alloc] initWithObjectsAndKeys:
                                            [NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredCertificates,
                                            [NSNumber numberWithBool:YES], kCFStreamSSLAllowsAnyRoot,
@@ -1238,6 +1238,19 @@ static NSOperationQueue *sharedQueue = nil;
                                            kCFNull,kCFStreamSSLPeerName,
                                            @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3", kCFStreamSSLLevel,
                                            nil];
+            
+            */
+            
+            /* THIS IS A TEST */
+            NSDictionary *sslProperties = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                           [NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredCertificates,
+                                           [NSNumber numberWithBool:YES], kCFStreamSSLAllowsAnyRoot,
+                                           [NSNumber numberWithBool:NO],  kCFStreamSSLValidatesCertificateChain,
+                                           kCFNull,kCFStreamSSLPeerName,
+                                           @"kCFStreamSocketSecurityLevelNegotiatedSSL", kCFStreamSSLLevel,
+                                           nil];
+            
+            
             
             CFReadStreamSetProperty((CFReadStreamRef)[self readStream], 
                                     kCFStreamPropertySSLSettings, 
